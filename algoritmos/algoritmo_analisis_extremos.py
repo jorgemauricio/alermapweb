@@ -106,7 +106,7 @@ for i in range(1,6,1):
 
 	# título temporal de columna
 	tempTitleColumn = "Tmin{}".format(i)
-	dataTemp = data.loc[(data[tempTitleColumn] >= 0) & (data[tempTitleColumn] <= 10)]
+	dataTemp = data.loc[(data[tempTitleColumn] >= 10) & (data[tempTitleColumn] <= 20)]
 
 	print(dataTemp.info())
 	print(dataTemp.max())
@@ -119,52 +119,33 @@ for i in range(1,6,1):
 	#%% set up plot
 	plt.clf()
 
-	#fig = plt.figure(figsize=(48,24))
+	fig = plt.figure(figsize=(12,8))
 	m = Basemap(projection='mill',llcrnrlat=12.37,urcrnrlat=33.5791,llcrnrlon=-118.2360,urcrnrlon=-86.1010,resolution='h')
 
-	#%% generate lats, lons
-	x, y = m(lons,lats)
+	# generar xp
+	xp = np.array(dataTemp['Long'])
 
-	#%% number of cols and rows
-	numcols = len(x)
-	numrows = len(y)
-	print(numcols, numrows)
+	# generar yp
+	yp = np.array(dataTemp['Lat'])
 
-	#%% generate xi, yi
-	xi = np.linspace(x.min(), x.max(), numcols)
-	yi = np.linspace(y.min(), y.max(), numrows)
-
-	#%% generate meshgrid
-	xi, yi = np.meshgrid(xi,yi)
-
-	# generar zi
-	z = np.array(dataTemp[tempTitleColumn])
-
-	print('***** print z',z)
-	zi = gd((x,y), z, (xi,yi), method='cubic')
-
-	#generate clevs
-	clevs = np.linspace(z.min(), z.max(), 10)
-	#clevs = [1, 5, 10,15, 20, 25, 30, 35, 40, 45, 50, 55, 60]
-	
-	#%% contour plot
-	cs = m.contourf(xi,yi,zi, clevs, zorder=4, alpha=0.6, cmap='inferno_r')
-	#%% draw map details
-	#m.drawcoastlines()
-	#m.drawstates(linewidth=0.7)
-	#m.drawcountries()
-	#%% read municipios shape file
+	# leer archivo shape Estados
 	m.readshapefile('shapes/Estados', 'Estados')
-	#m.readshapefile('shapes/Estados', 'Estados')
-	#m.drawmapscale(22, -103, 23, -102, 100, units='km', fontsize=14, yoffset=None, barstyle='fancy', labelstyle='simple', fillcolor1='w', fillcolor2='#000000',fontcolor='#000000', zorder=5)
 
-	#%% colorbar
-	cbar = m.colorbar(cs, location='right', pad="5%")
-	cbar.set_label('mm')
+	# agregar raster
+	# m.bluemarble()
+
+	# gráficar puntos
+	m.scatter(xp, yp, latlon=True, s=3, marker='o', color='b', zorder=25, alpha=0.5)
+
+	# titulo del mapa
 	tempMapTitle = "Temperatura mínima 24h\nPronóstico válido para: {}".format(arrayFechas[counterFecha])
 	plt.title(tempMapTitle)
 	tempFileName = "/Users/jorgemauricio/Documents/Research/alermapweb/data/{}/{}.png".format(fechaPronostico,i)
+	
+	# crear anotación
 	plt.annotate('@2017 INIFAP', xy=(-118,33), xycoords='figure fraction', xytext=(0.45,0.45), color='g')
+	
+	# guardar mapa
 	plt.savefig(tempFileName, dpi=300)
 	counterFecha += 1
 	print('****** Genereate: {}'.format(tempFileName))
