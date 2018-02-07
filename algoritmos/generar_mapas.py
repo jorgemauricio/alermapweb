@@ -168,15 +168,15 @@ def colorPuntoEnMapa(variable,rango):
 			return 'maroon'
 
 	if variable == "Tmin":
-		if rango == "6/3":
+		if rango == "3/6":
 			return 'powderblue'
-		elif rango == "3/0":
+		elif rango == "0/3":
 			return 'lightskyblue'
-		elif rango == "0/-3":
+		elif rango == "-3/0":
 			return 'dodgerblue'
-		elif rango == "-3/-6":
+		elif rango == "-6/-3":
 			return 'steelblue'
-		elif rango == "-6/-9":
+		elif rango == "-9/-6":
 			return 'darkblue'
 
 	if variable == "Windpro":
@@ -218,7 +218,7 @@ def mapasExtremos(fp):
 	os.chdir(path)
 
 	# ********** dict de análisis
-	d = {"Rain" : ['20/50', '50/70', '70/150', '150/300', '300/500'], "Tmax":['30/35', '35/40', '40/45', '45/50', '50/60'], "Tmin" : ['6/3','3/0','0/-3','-3/-6','-6/-9'], "Windpro" : ['62/74', '75/88', '89/102', '103/117', '118/150']}
+	d = {"Rain" : ['20/50', '50/70', '70/150', '150/300', '300/500'], "Tmax":['30/35', '35/40', '40/45', '45/50', '50/60'], "Tmin" : ['-9/-6','-6/-3','-3/0','0/3','3/6'], "Windpro" : ['62/74', '75/88', '89/102', '103/117', '118/150']}
 
 	# ********** array colores
 	# generar fechas mediante función
