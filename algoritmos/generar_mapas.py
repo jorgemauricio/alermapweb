@@ -19,11 +19,46 @@ import ftplib
 import shutil
 import csv
 import math
-
+from api import claves
 
 def main():
-	print("Init")
-	mapasExtremos()
+    print("Init")
+    FECHA_PRONOSTICO = descargarInfo()
+    mapasExtremos(FECHA_PRONOSTICO)
+
+def descargarInfo():
+    # datos del servidor
+    serverInfo = claves()
+    # conexión al server
+    ftp = ftplib.FTP(serverInfo.ip)
+    # login al servidor
+    ftp.login(serverInfo.usr, serverInfo.pwd)
+    # arreglo para determinar fecha
+    arregloArchivos = []
+    arregloFechas = []
+    ftp.dir(arregloArchivos.append)
+    for archivo in arregloArchivos:
+        arregloArchivo = archivo.split()
+        arregloFechas.append(arregloArchivo[8])
+    FECHA_PRONOSTICO = arregloFechas[-1]
+    rutaPronostico = "data/{}".format(FECHA_PRONOSTICO)
+    ftp.cwd(FECHA_PRONOSTICO)
+    # validar la ruta para guardar los datos
+    if not os.path.exists(rutaPronostico):
+        os.mkdir(rutaPronostico)
+    else:
+        print("***** Carpeta ya existe")
+
+    # descarga de información
+    for i in range(1,6):
+        rutaArchivoRemoto = "d{}.txt".format(i)
+        rutaArchivoLocal = "{}/d{}.txt".format(rutaPronostico,i)
+        lf = open(rutaArchivoLocal, "wb")
+        ftp.retrbinary("RETR " + rutaArchivoRemoto, lf.write, 8*1024)
+        lf.close()
+    ftp.close()
+
+    return FECHA_PRONOSTICO
 
 def generarFechas(f):
 	"""
@@ -102,14 +137,14 @@ def generarTexto(f, k,vMn, vMx):
 	else:
 		pass
 
-def mapasExtremos():
+def mapasExtremos(fp):
 	"""
 	Función que permite generar los mapas de eventos extremos
 	"""
 	# ********** fecha pronóstico
-	fechaPronostico = '2018-01-08'
+	fechaPronostico = fp
 	# fechaPronostico = strftime("%Y-%m-%d")
-	
+
 	# ********** path
 	# path server
 	# path = "/home/jorge/Documents/work/autoPronosticoSonora"
@@ -121,7 +156,7 @@ def mapasExtremos():
 
 	# ********** dict de análisis
 	d = {"Rain" : ['20/50', '50/70', '70/150', '150/300', '300/500'], "Tmax":['30/35', '35/40', '40/45', '45/50', '50/60'], "Tmin" : ['-10/-3'], "Windpro" : ['62/74', '75/88', '89/102', '103/117', '118/150']}
-	
+
 	# generar fechas mediante función
 	arrayFechas = generarFechas(fechaPronostico)
 
@@ -140,7 +175,7 @@ def mapasExtremos():
 				vMin, vMax = i.split('/')
 				vMin = int(vMin)
 				vMax = int(vMax)
-				
+
 				# título temporal de la columna a procesar
 				tituloTemporalColumna = key
 				dataTemp = data.loc[(data[tituloTemporalColumna] >= vMin) & (data[tituloTemporalColumna] <= vMax)]
@@ -173,12 +208,12 @@ def mapasExtremos():
 				# titulo del mapa
 				tituloTemporalMapa = generarTexto(arrayFechas[j-1], key, vMin, vMax)
 				plt.title(tituloTemporalMapa)
-				
+
 				tituloTemporalArchivo = "{}/data/{}/{}_{}_{}_{}.png".format(path,fechaPronostico,arrayFechas[j-1],key,vMin, vMax)
-				
+
 				# crear anotación
 				plt.annotate('@2018 INIFAP', xy=(-118,33), xycoords='figure fraction', xytext=(0.45,0.45), color='g')
-				
+
 				# guardar mapa
 				plt.savefig(tituloTemporalArchivo, dpi=300)
 				print('****** Genereate: {}'.format(tituloTemporalArchivo))
