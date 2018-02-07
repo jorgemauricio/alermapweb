@@ -151,11 +151,17 @@ def mapasExtremos(fp):
 	# os.chdir(path)
 	# path local
 
+
+	# ********* Lat y Long
+	LONG_MAX = -86.1010
+	LONG_MIN = -118.2360
+	LAT_MAX = 33.5791
+	LAT_MIN = 12.37
 	path = "/Users/jorgemauricio/Documents/Research/alermapweb"
 	os.chdir(path)
 
 	# ********** dict de análisis
-	d = {"Rain" : ['20/50', '50/70', '70/150', '150/300', '300/500'], "Tmax":['30/35', '35/40', '40/45', '45/50', '50/60'], "Tmin" : ['-10/-3'], "Windpro" : ['62/74', '75/88', '89/102', '103/117', '118/150']}
+	d = {"Rain" : ['20/50', '50/70', '70/150', '150/300', '300/500'], "Tmax":['30/35', '35/40', '40/45', '45/50', '50/60'], "Tmin" : ['-10/3'], "Windpro" : ['62/74', '75/88', '89/102', '103/117', '118/150']}
 
 	# generar fechas mediante función
 	arrayFechas = generarFechas(fechaPronostico)
@@ -188,7 +194,7 @@ def mapasExtremos(fp):
 				plt.clf()
 
 				fig = plt.figure(figsize=(12,8))
-				m = Basemap(projection='mill',llcrnrlat=12.37,urcrnrlat=33.5791,llcrnrlon=-118.2360,urcrnrlon=-86.1010,resolution='h')
+				m = Basemap(projection='mill',llcrnrlat=LAT_MIN,urcrnrlat=LAT_MAX,llcrnrlon=LONG_MIN,urcrnrlon=LONG_MAX,resolution='h')
 
 				# generar xp
 				xp = np.array(dataTemp['Long'])
@@ -212,7 +218,9 @@ def mapasExtremos(fp):
 				tituloTemporalArchivo = "{}/data/{}/{}_{}_{}_{}.png".format(path,fechaPronostico,arrayFechas[j-1],key,vMin, vMax)
 
 				# crear anotación
-				plt.annotate('@2018 INIFAP', xy=(-118,33), xycoords='figure fraction', xytext=(0.45,0.45), color='g')
+				latitudAnotacion = (LAT_MAX + LAT_MIN) / 2
+				longitudAnotacion = (LONG_MAX + LONG_MIN) / 2
+				plt.annotate('@2018 INIFAP', xy=(longitudAnotacion,latitudAnotacion), xycoords='figure fraction', xytext=(0.45,0.45), color='g')
 
 				# guardar mapa
 				plt.savefig(tituloTemporalArchivo, dpi=300)
