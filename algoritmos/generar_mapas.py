@@ -53,18 +53,15 @@ def descargarInfo():
 		os.mkdir(rutaPronostico)
 	else:
 		print("***** Carpeta ya existe")
-		rutaArchivoPronostico = f"{rutaPronostico}/d1.txt"
-		if rutaArchivoPronostico:
-			print("Archivo d1.txt existe")
-		else:
-			# descarga de información
-			for i in range(1,6):
-				rutaArchivoRemoto = "d{}.txt".format(i)
-				rutaArchivoLocal = "{}/d{}.txt".format(rutaPronostico,i)
-				lf = open(rutaArchivoLocal, "wb")
-				ftp.retrbinary("RETR " + rutaArchivoRemoto, lf.write, 8*1024)
-				lf.close()
-			ftp.close()
+
+	# descarga de información
+	for i in range(1,6):
+		rutaArchivoRemoto = "d{}.txt".format(i)
+		rutaArchivoLocal = "{}/d{}.txt".format(rutaPronostico,i)
+		lf = open(rutaArchivoLocal, "wb")
+		ftp.retrbinary("RETR " + rutaArchivoRemoto, lf.write, 8*1024)
+		lf.close()
+	ftp.close()
 	return FECHA_PRONOSTICO
 
 def generarFechas(f):
@@ -152,7 +149,7 @@ def colorPuntoEnMapa(variable,rango):
 		if rango == "20/50":
 			return 'aqua'
 		elif rango == "50/70":
-			return 'azure'
+			return 'powderblue'
 		elif rango == "70/150":
 			return 'darkblue'
 		elif rango == "150/300":
