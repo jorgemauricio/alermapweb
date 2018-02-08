@@ -2,8 +2,8 @@
 # -*- coding: utf-8 -*-
 """
 #######################################
-# A script to calculate statistics from
-# a text file using NumPy
+# Script que permite la generación de mapas
+# meteorológicos extremos
 # Author: Jorge Mauricio
 # Email: jorge.ernesto.mauricio@gmail.com
 # Date: Created on Thu Sep 28 08:38:15 2017
