@@ -1,9 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-Created on Thu Sep 28 08:38:15 2017
-
-@author: jorgemauricio
+#######################################
+# A script to calculate statistics from
+# a text file using NumPy
+# Author: Jorge Mauricio
+# Email: jorge.ernesto.mauricio@gmail.com
+# Date: Created on Thu Sep 28 08:38:15 2017
+# Version: 1.0
+#######################################
 """
 
 import numpy as np
