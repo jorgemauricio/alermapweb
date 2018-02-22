@@ -126,72 +126,19 @@ def generarTexto(f, k,vMn, vMx):
 	"""
 	titulo = ""
 	if k == "Rain":
-		titulo = "Precipitación acumulada en 24h {} a {} mm\n Pronóstico válido para: {}".format(vMn, vMx, f)
+		titulo = "Precipitación acumulada en 24h de {} a {} mm\n Pronóstico válido para: {}".format(vMn, vMx, f)
 		return titulo
 	elif k == "Tmax":
-		titulo = "Temperatura máxima en 24h {} a {} ºC \n Pronóstico válido para: {}".format(vMn, vMx, f)
+		titulo = "Temperatura máxima en 24h de {} a {} ºC \n Pronóstico válido para: {}".format(vMn, vMx, f)
 		return titulo
 	elif k == "Tmin":
-		titulo = "Temperatura mínima en 24h {} a {} ºC \n Pronóstico válido para: {}".format(vMn, vMx, f)
+		titulo = "Temperatura mínima en 24h de {} a {} ºC \n Pronóstico válido para: {}".format(vMn, vMx, f)
 		return titulo
 	elif k == "Windpro":
-		titulo = "Viento promedio en 24h {} a {} km/h \n Pronóstico válido para: {}".format(vMn, vMx, f)
+		titulo = "Viento promedio en 24h de {} a {} km/h \n Pronóstico válido para: {}".format(vMn, vMx, f)
 		return titulo
 	else:
 		pass
-
-def colorPuntoEnMapa(variable,rango):
-	"""
-	Función que permite generar el color del putno que se va a mostrar en el mapa
-	"""
-	if variable == "Rain":
-		if rango == "20/50":
-			return 'aqua'
-		elif rango == "50/70":
-			return 'powderblue'
-		elif rango == "70/150":
-			return 'darkblue'
-		elif rango == "150/300":
-			return 'tomato'
-		elif rango == "300/500":
-			return 'crimson'
-
-	if variable == "Tmax":
-		if rango == "30/35":
-			return 'coral'
-		elif rango == "35/40":
-			return 'orange'
-		elif rango == "40/45":
-			return 'crimson'
-		elif rango == "45/50":
-			return 'tomato'
-		elif rango == "50/60":
-			return 'maroon'
-
-	if variable == "Tmin":
-		if rango == "3/6":
-			return 'powderblue'
-		elif rango == "0/3":
-			return 'lightskyblue'
-		elif rango == "-3/0":
-			return 'dodgerblue'
-		elif rango == "-6/-3":
-			return 'steelblue'
-		elif rango == "-9/-6":
-			return 'darkblue'
-
-	if variable == "Windpro":
-		if rango == "62/74":
-			return 'gold'
-		elif rango == "75/88":
-			return 'sandybrown'
-		elif rango == "89/102":
-			return 'darksalmon'
-		elif rango == "103/117":
-			return 'darkorange'
-		elif rango == "118/150":
-			return 'maroon'
-
 
 def mapasExtremos():
 	"""
@@ -199,7 +146,7 @@ def mapasExtremos():
 	"""
 	# ********** fecha pronóstico
 	# fechaPronostico = fp
-	fechaPronostico = "2018-02-21"
+	fechaPronostico = "2018-02-22"
 	# fechaPronostico = strftime("%Y-%m-%d")
 
 	# ********** path
@@ -244,10 +191,6 @@ def mapasExtremos():
 			# título temporal de la columna a procesar
 			tituloTemporalColumna = key
 			dataTemp = data
-			dataTemp[dataTemp[tituloTemporalColumna] < vMin] = generarMinimo(key)
-			dataTemp[dataTemp[tituloTemporalColumna] > vMax] = generarMaximo(key)
-			print(dataTemp.describe())
-			#dataTemp = data.loc[(data[tituloTemporalColumna] >= vMin) & (data[tituloTemporalColumna] <= vMax)]
 
 			#obtener valores de x y y
 			lons = np.array(dataTemp['Long'])
@@ -268,8 +211,8 @@ def mapasExtremos():
 			numRows = len(y)
 
 			# generar xi, yi
-			xi = np.linspace(x.min(), x.max(), 3000)
-			yi = np.linspace(y.min(), y.max(), 3000)
+			xi = np.linspace(x.min(), x.max(), 1000)
+			yi = np.linspace(y.min(), y.max(), 1000)
 
 			# generar el meshgrid
 			xi, yi = np.meshgrid(xi, yi)
@@ -286,7 +229,7 @@ def mapasExtremos():
 			clevs = generarRangos(key)
 
 			# contour plot
-			cs = m.contourf(xi,yi,zi, clevs, zorder=25, alpha=0.5, cmap='coolwarm')
+			cs = m.contourf(xi,yi,zi, clevs, zorder=25, alpha=0.7, cmap=generarMapaDeColores(key))
 
 			# colorbar
 			cbar = m.colorbar(cs, location='right', pad="5%")
@@ -317,9 +260,9 @@ def mapasExtremos():
 
 def generarRangos(variable):
 	if variable == "Rain":
-		return (20, 50 , 70, 150, 300, 500)
+		return (20, 50, 70, 100, 150,200, 300, 400, 500)
 	elif variable == "Tmax":
-		return (30, 35,40, 45, 50, 60)
+		return (30, 35,40, 45, 50, 55, 60)
 	elif variable == "Tmin":
 		return (-9, -6, -3, 0, 3, 6)
 	elif variable == "Windpro":
@@ -339,27 +282,15 @@ def generarSimbologia(variable):
 	else:
 		print("Error Clevs")
 
-def generarMinimo(variable):
+def generarMapaDeColores(variable):
 	if variable == "Rain":
-		return 0
+		return "rainbow"
 	elif variable == "Tmax":
-		return 29
+		return "YlOrRd"
 	elif variable == "Tmin":
-		return -10
+		return "winter"
 	elif variable == "Windpro":
-		return 61
-	else:
-		print("Error Clevs")
-
-def generarMaximo(variable):
-	if variable == "Rain":
-		return 600
-	elif variable == "Tmax":
-		return 61
-	elif variable == "Tmin":
-		return 7
-	elif variable == "Windpro":
-		return 190
+		return "Wistia"
 	else:
 		print("Error Clevs")
 
