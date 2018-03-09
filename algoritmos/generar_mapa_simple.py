@@ -19,12 +19,11 @@ from scipy.interpolate import griddata as gd
 from time import gmtime, strftime
 import time
 import os
-from time import gmtime, strftime
 import ftplib
 import shutil
 import csv
 import math
-from api import claves
+#from api import claves
 
 def main():
 	print("Init")
@@ -146,7 +145,7 @@ def mapasExtremos():
 	"""
 	# ********** fecha pronóstico
 	# fechaPronostico = fp
-	fechaPronostico = "2018-02-22"
+	fechaPronostico = "2018-02-21"
 	# fechaPronostico = strftime("%Y-%m-%d")
 
 	# ********** path
@@ -163,7 +162,7 @@ def mapasExtremos():
 	LAT_MIN = 12.37
 
 	# ********** Path
-	path = "/Users/jorgemauricio/Documents/Research/alermapweb"
+	path = "/home/jorge/Documents/Research/alermapweb"
 	os.chdir(path)
 
 	# ********** dict de análisis
@@ -247,7 +246,7 @@ def mapasExtremos():
 			# crear anotación
 			latitudAnotacion = (LAT_MAX + LAT_MIN) / 2
 			longitudAnotacion = (LONG_MAX + LONG_MIN) / 2
-			plt.annotate('@2018 INIFAP', xy=(longitudAnotacion,latitudAnotacion), xycoords='figure fraction', xytext=(0.45,0.45), color='g')
+			plt.annotate('@2018 INIFAP', xy=(longitudAnotacion,latitudAnotacion), xycoords='figure fraction', xytext=(0.45,0.45), color='g', zorder=50)
 
 			# guardar mapa
 			plt.savefig(tituloTemporalArchivo, dpi=300)
